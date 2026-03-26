@@ -1,5 +1,5 @@
 #!/bin/bash
-REPORT="sentinel_report.txt"
+REPORT="/tmp/sentinel_report.txt"
 
 {
   echo "=== SYSTEM CONTEXT OVERVIEW ==="
