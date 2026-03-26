@@ -21,3 +21,12 @@ REPORT="sentinel_report.txt"
 
 echo "🎯 Audit complete. Reviewing summary..."
 cat "$REPORT"
+
+# --- Sentinel AI Enhancement: Obfuscation Scanner ---
+echo "🔍 Scanning for Base64 or eval obfuscation..."
+for file in *.sh; do
+    if grep -qE "base64|eval" "$file"; then
+        echo "⚠️ WARNING: Potential obfuscation detected in: $file"
+        grep -nE "base64|eval" "$file"
+    fi
+done
