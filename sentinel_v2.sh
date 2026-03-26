@@ -1,28 +1,10 @@
 #!/bin/bash
+echo "🛡️ Sentinel V2: System Audit Initiated..."
 REPORT="/tmp/sentinel_report.txt"
-
-{
-  echo "=== SYSTEM CONTEXT OVERVIEW ==="
-  echo "Date: $(date)"
-  echo "Active Network Listeners (LSOF):"
-  lsof -i -P -n | grep LISTEN | awk '{print $1, $9}'
-  
-  echo -e "\n=== CRITICAL EXTENSIONS ==="
-  systemextensionsctl list | grep "enabled"
-  
-  echo -e "\n=== SCRIPT AUDIT START ==="
-  for f in *.sh; do
-    [[ "$f" == "sentinel_v2.sh" ]] && continue
-    echo "FILE: $f"
-    cat "$f"
-    echo -e "\n---"
-  done
-} | ollama run llama3.1-64k "As a Senior Security Auditor, compare these running processes and extensions against the provided scripts. Are any scripts creating the network listeners I see? Is there anything suspicious? Be precise." > "$REPORT"
-
-echo "🎯 Audit complete. Reviewing summary..."
-cat "$REPORT"
-
-# --- Sentinel AI Enhancement: Obfuscation Scanner ---
+echo "--- Network Listeners ---" > $REPORT
+lsof -i -P -n | grep LISTEN >> $REPORT
+echo "--- System Extensions ---" >> $REPORT
+systemextensionsctl list >> $REPORT
 echo "🔍 Scanning for Base64 or eval obfuscation..."
 for file in *.sh; do
     if grep -qE "base64|eval" "$file"; then
@@ -30,3 +12,5 @@ for file in *.sh; do
         grep -nE "base64|eval" "$file"
     fi
 done
+echo "🎯 Audit complete. Report saved to $REPORT"
+(sleep 300 && rm -f $REPORT) &

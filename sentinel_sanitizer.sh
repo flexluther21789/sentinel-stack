@@ -1,4 +1,6 @@
 #!/bin/bash
-echo "🧹 Sanitizing environment..."
-rm -f .tmp* .session_delta.tmp .zshrc.save ~/.sentinel_tripwire.log
-echo "✅ Cleanup complete."
+echo "🧹 Sanitizing Environment..."
+rm -f /tmp/sentinel_report.txt
+history -c
+clear
+echo "✨ Session Cleaned."
