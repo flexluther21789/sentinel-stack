@@ -1,8 +1,14 @@
 #!/bin/bash
-echo "🕵️ Tripwire: Checking file integrity..."
-shasum -a 256 -c manifest.sha256
-if [ $? -eq 0 ]; then
-    echo "✅ Integrity Verified."
-else
-    echo "🚨 ALERT: Manifest Mismatch! Files may have been tampered with."
-fi
+KNOWN_IPS="172.20.10.1|172.20.10.15"
+echo "🛰️ Sentinel Audio Tripwire ACTIVE..."
+say "Sentinel Tripwire Active"
+while true; do
+    current_devices=$(arp -a | grep "172.20.10" | grep -v "incomplete" | awk '{print $2}' | tr -d '()')
+    for ip in $current_devices; do
+        if [[ ! "$ip" =~ $KNOWN_IPS ]]; then
+            echo "🚨 UNKNOWN: $ip" | sed "s/$(whoami)/USER/g"
+            say "Warning. Unknown device at $ip"
+        fi
+    done
+    sleep 10
+done
