@@ -3,3 +3,6 @@ security_audit_report.txt
 sentinel_report.txt
 .DS_Store
 .tmp*
+network_log.txt
+baseline.txt
+.DS_Store
