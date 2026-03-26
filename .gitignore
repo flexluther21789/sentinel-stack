@@ -1,0 +1,5 @@
+*.log
+security_audit_report.txt
+sentinel_report.txt
+.DS_Store
+.tmp*
