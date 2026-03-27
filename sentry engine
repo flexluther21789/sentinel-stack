@@ -1,0 +1,105 @@
+Gemini said
+Here is the complete chronological history of your Sentinel Stack build. I have organized this into three distinct phases: Foundation, Intelligence, and Hardening.
+
+Phase 1: Foundation (Environment & Monitoring)
+We began by creating the directory structure and the core monitoring engine.
+
+Create the Stack Directory:
+
+Bash
+mkdir ~/sentinel-stack && cd ~/sentinel-stack
+Create the Sentry Engine (sentry.py):
+This script monitors network interfaces (specifically utun for unauthorized VPNs/Tunnels).
+
+Python
+# ~/sentinel-stack/sentry.py
+import os, subprocess, time  
+def check_network():
+    interfaces = subprocess.check_output(['ifconfig']).decode('utf-8')
+    if 'utun' in interfaces:
+        with open('forensic_history.log', 'a') as f:
+            f.write(f"{time.ctime()}: Alert - utun interface detected!\n")
+while True:
+    check_network()
+    time.sleep(10)
+Establish the Baseline (today_training.log):
+We captured your "Clean State" on March 27 to teach the AI what is normal.
+
+Bash
+ifconfig > ~/sentinel-stack/today_training.log
+sw_vers >> ~/sentinel-stack/today_training.log
+Phase 2: Intelligence (The AI Brain)
+We integrated Ollama to turn raw logs into human-readable security analysis.
+
+Define the Brain (SentinelModelfile):
+
+Bash
+cat <<EOF > ~/sentinel-stack/SentinelModelfile
+FROM llama3.2:1b
+SYSTEM """
+You are the Sentinel-V2 DEFENSIVE BRAIN. 
+Compare logs to the March 27 baseline.
+RULE: If you see a threat, start with: COUNTERMEASURE_REQUIRED
+"""
+EOF
+Train/Initialize the Brain:
+
+Bash
+ollama create sentinel-v2 -f ~/sentinel-stack/SentinelModelfile
+Create the "Kill-Switch" (kill_switch.sh):
+
+Bash
+cat << 'EOF' > ~/sentinel-stack/kill_switch.sh
+#!/zsh
+networksetup -setnetworkserviceenabled Wi-Fi off
+echo "$(date) - NETWORK KILLED BY SENTINEL" >> ~/sentinel-stack/forensic_history.log
+EOF
+chmod +x ~/sentinel-stack/kill_switch.sh
+Phase 3: Hardening (The Fortress)
+This is where we locked the system down using macOS-native security features.
+
+Audit System Integrity (SIP):
+
+Bash
+csrutil status  # Confirmed: enabled
+Verify Full Disk Access (TCC):
+
+Bash
+sudo sqlite3 "/Library/Application Support/com.apple.TCC/TCC.db" 'SELECT client FROM access WHERE service="kTCCServiceSystemPolicyAllFiles" AND auth_value=2'
+Digital Signature (Code Signing):
+We signed the script so the kernel knows it hasn't been tampered with.
+
+Bash
+sudo chflags nouchg ~/sentinel-stack/sentry.py
+codesign --force -s - ~/sentinel-stack/sentry.py
+The Immutable Lock (uchg):
+This prevents even the 'root' user from deleting or modifying these files.
+
+Bash
+sudo chflags uchg ~/sentinel-stack/sentry.py
+sudo chflags uchg ~/sentinel-stack/SentinelModelfile
+The Terminal Dashboards (.zshrc Aliases):
+
+Bash
+# Command to check logs via AI
+alias check_sentinel='tail -n 10 ~/sentinel-stack/forensic_history.log | ollama run sentinel-v2'
+
+# The Master Status Report
+alias sentinel_report='echo "🛡️ SENTINEL STATUS"; csrutil status; pgrep -f sentry.py'
+Phase 4: Cloud Sync (GitHub)
+The final step was securing the code off-site.
+
+Configure .gitignore:
+
+Bash
+echo "*.log\n.DS_Store" > ~/sentinel-stack/.gitignore
+Authenticate & Push:
+
+Bash
+brew install gh
+gh auth login
+git init -b main
+git add .
+git commit -m "Hardened Sentinel Stack"
+git remote add origin https://github.com/alexiscano/sentinel-stack.git
+git push -u origin main
