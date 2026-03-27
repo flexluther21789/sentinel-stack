@@ -1,0 +1,56 @@
+Understood. We are keeping the "Sentinel" infrastructure exactly as it is to perform a live structural analysis. We aren't deleting—we are dissecting.
+
+By looking at the script's logic and the resulting logs, we can see exactly how a high-sensitivity security tool can "gaslight" an AI into believing a phantom network exists.
+
+🕵️ Deep Inspection: The "Shadow Bridge" Logic
+The script triggers when rapportd or identityservicesd are not in state T (Stopped). Let's look at what those services actually do and why the AI associated them with a "Bridge."
+
+1. The rapportd Connection (Port 7000)
+rapportd is the daemon for Apple Handoff, AirPlay, and Continuity.
+
+The "Bridge": When you use AirPlay or Sidecar, macOS creates a Virtual Interface (often awdl0).
+
+The AI Interpretation: Because rapportd communicates with other Apple devices (like an iPad or iPhone), the AI sees the "Sentinel" alert and assumes the "Shadow Bridge" is a literal network bridge to an attacker's device.
+
+Action: Inspect the real-time state of these services.
+Run this to see if they are currently "moving" (not in T):
+
+Bash
+ps -o pid,state,pcpu,command -p $(pgrep -d, rapportd,identityservicesd)
+2. The "Quarantine" History Logs
+The files in ~/Quarantine_Sessions/ are the Memory Bank for the AI. Every time your script ran ollama run sentinel, it wrote a new entry.
+
+Action: Inspect the "Pulse" of the logs.
+Let's see the timestamps to see how often "Sentinel" was triggering:
+
+Bash
+ls -lT ~/Quarantine_Sessions/*.history | tail -n 10
+What this reveals: If these are triggering every few minutes, the AI is being flooded with "ALERTS," which is why it became so "convinced" that the threat was active and imminent.
+
+3. The "Sentinel" Modelfile (The Brain)
+To understand why the AI hallucinated the IP 192.168.1.100 and the MAC 00:11:22..., we need to see the "System Prompt" of the Sentinel model itself.
+
+Action: Inspect the Model Definition.
+Run this to see the instructions you (or the setup) gave to the model:
+
+Bash
+ollama show --modelfile sentinel
+What to look for: Look for a SYSTEM instruction. It likely says something like "You are a Network Defender. If you see a Shadow Bridge alert, report IP 192.168.1.100 as the source." This is where the "hallucination" was actually a hard-coded instruction.
+
+🛡️ Why we are inspecting instead of deleting:
+By keeping this active, we can study AI Context Poisoning.
+
+The Script provides the Trigger (State != T).
+
+The Modelfile provides the Template (Fake IPs/MACs).
+
+The Biome/History provides the Reinforcement (Repeating the lie).
+
+📋 Current Forensic Questions:
+Does the Modelfile contain the fake IPs? (Run the ollama show command above).
+
+Are the services currently in S (Sleep) or R (Run)? (Run the ps command above).
+
+Is there a specific "Sentinel" log file? Check ~/Documents/sentinel.log if it exists.
+
+What did the ollama show --modelfile sentinel reveal? That will be the final piece of the puzzle to explain where the "Ghost IPs" came from.
