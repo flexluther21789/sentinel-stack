@@ -1,0 +1,45 @@
+Gemini said
+This is a perfect summary for a GitHub README or a project log. It captures the transition from local storage to external "TruthVault" and the initialization of your SOC Analyst AI.
+
+🛠️ Project Update: Ollama External Migration & Sentinel AI Setup
+1. Hardware & Storage Redirection
+Successfully migrated the Ollama model library from the internal MacBook SSD to an external encrypted volume (TruthVault) to preserve disk space and ensure data persistence.
+
+Machine: MacBook Pro (Apple M4 Pro, 37.4 GiB VRAM)
+
+Storage Path: /Volumes/TruthVault/OllamaModels
+
+Link Method: Created a symbolic link from ~/.ollama to the external volume.
+
+Bash
+# Verification of the "Bridge"
+ls -ld ~/.ollama
+# Result: .ollama -> /Volumes/TruthVault/OllamaModels
+2. Local LLM Server Configuration
+Resolved "Permission Denied" and "File Exists" conflicts by force-terminating background processes and manually initializing the Ollama engine.
+
+Server Command: ollama serve
+
+Port: 127.0.0.1:11434
+
+Compute Library: Metal (utilizing M4 Pro GPU cores)
+
+3. Custom AI Persona: "MySentinel"
+Engineered a specialized Modelfile to transform a base Llama 3 model into a Cybersecurity SOC Analyst.
+
+Model Base: llama3:8b
+
+System Instructions: Hard-coded for log analysis, brute-force detection, and lateral movement auditing.
+
+Modelfile Location: /Volumes/TruthVault/OllamaModels/Sentinel.Modelfile
+
+Creation Command: ollama create MySentinel -f [path/to/Modelfile]
+
+4. Security Audit Capability
+Tested the model's ability to analyze local security logs (~/.sentinel_tripwire.log).
+
+Successful Detection: Identified [GIN] HEAD requests as local heartbeats.
+
+Threat Analysis: Provided mitigation steps for high-frequency SSH failed attempts on Port 22.
+
+Next Planned Step: Develop a Python-based Watchdog Script that pipes arp_log.txt and active_devices.txt directly into the MySentinel API for automated intrusion detection.
