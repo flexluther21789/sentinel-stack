@@ -1,0 +1,31 @@
+cat << 'EOF' > sentinel_final_report.sh
+#!/bin/bash
+# Project Shadow-Bridge: FINAL FORENSIC VERIFICATION
+# Case: Lexs-MacBook-Pro | Date: Apr 5, 2026
+# Status: ACTIVE HIJACK CONFIRMED
+
+echo "--- [1] LIVE SURVEILLANCE CHECK (ScreenSharing) ---"
+pgrep -fl "ScreenSharingSubscriber" && echo "CRITICAL: Remote mirroring ACTIVE."
+
+echo -e "\n--- [2] MEMORY INJECTION VERIFY (Environment) ---"
+env | grep -E "REAL_TRUTH|OLLAMA_HOST" && echo "CRITICAL: Shell environment is GHOST-PATCHED."
+
+echo -e "\n--- [3] NETWORK EXFILTRATION MAP (Ollama/utun) ---"
+netstat -an | grep 11434 | grep "LISTEN" && echo "CRITICAL: AI Server open to WAN (0.0.0.0)."
+ifconfig | grep -A 3 "utun" | grep "permanent R"
+
+echo -e "\n--- [4] KERNEL USB FILTER STATUS ---"
+# Check if Mass Storage is being suppressed (Value should be > 0 for external drives)
+ioreg -p IOUSB -l | grep "IOUSBMassStorageUASDriver"
+
+echo -e "\n--- [5] EXTERNAL DRIVE 'HOT' STATUS ---"
+# Verify if the drive is mounting as 'Microsoft Basic Data' with AppleDouble '._' files
+ls -la /Users/$USER/rescue_zone | grep "._" && echo "WARNING: Active infection metadata writing to external."
+
+echo -e "\n--- [6] SYSTEM SIGNATURE ---"
+sw_vers && uname -m
+echo "--- VERIFICATION COMPLETE: SHUT DOWN IMMEDIATELY ---"
+EOF
+
+chmod +x sentinel_final_report.sh
+./sentinel_final_report.sh
